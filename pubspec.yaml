@@ -30,3 +30,30 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: MuseoSans100
+      fonts:
+        - asset: lib/config/fonts/museo_sans100.ttf
+        - asset: lib/config/fonts/museo_sans100italic.ttf
+          style: italic
+    - family: MuseoSans300
+      fonts:
+        - asset: lib/config/fonts/museo_sans300.ttf
+        - asset: lib/config/fonts/museo_sans300italic.ttf
+          style: italic
+    - family: MuseoSans500
+      fonts:
+        - asset: lib/config/fonts/museo_sans500.ttf
+        - asset: lib/config/fonts/museo_sans500italic.ttf
+          style: italic
+    - family: MuseoSans700
+      fonts:
+        - asset: lib/config/fonts/museo_sans700.ttf
+        - asset: lib/config/fonts/museo_sans700italic.ttf
+          style: italic
+    - family: MuseoSans900
+      fonts:
+        - asset: lib/config/fonts/museo_sans900.ttf
+        - asset: lib/config/fonts/museo_sans900italic.ttf
+          style: italic
