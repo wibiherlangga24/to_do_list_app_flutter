@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:todo_list_app_flutter/yesterday_page.dart';
+import 'package:todo_list_app_flutter/config/theme/theme_text_style.dart';
+import 'package:todo_list_app_flutter/features/today/presentation/pages/today_page.dart';
+import 'package:todo_list_app_flutter/features/tomorrow/presentation/pages/tomorrow_page.dart';
+import 'package:todo_list_app_flutter/features/yesterday/presentation/pages/yesterday_page.dart';
 
 class AppRouter extends StatefulWidget {
   const AppRouter({Key? key}) : super(key: key);
@@ -14,18 +17,29 @@ class _AppRouterState extends State<AppRouter> {
 
   List<Widget> allPage = [
     const YesterdayPage(),
+    const TodayPage(),
+    const TomorrowPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const YesterdayPage(),
+      appBar: AppBar(
+        title: Text(
+          'My To do List',
+          style: ThemeTextStyle.MuseoSans700w400.copyWith(
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.orange,
+      ),
+      body: allPage[_selectedIndex],
       bottomNavigationBar: Container(
-        color: Colors.black,
+        color: Colors.orange,
         child: SafeArea(
           child: GNav(
             gap: 8,
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.orange,
             color: Colors.white,
             activeColor: Colors.white,
             tabs: const [
@@ -43,7 +57,11 @@ class _AppRouterState extends State<AppRouter> {
               ),
             ],
             selectedIndex: _selectedIndex,
-            onTabChange: (index) {},
+            onTabChange: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
           ),
         ),
       ),
