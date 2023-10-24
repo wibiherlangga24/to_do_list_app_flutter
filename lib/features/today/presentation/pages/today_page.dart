@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list_app_flutter/config/theme/theme_text_style.dart';
+import 'package:todo_list_app_flutter/features/add_task/presentation/pages/create_today_page.dart';
 
 class TodayPage extends StatefulWidget {
   const TodayPage({Key? key}) : super(key: key);
@@ -24,24 +25,14 @@ class _TodayPageState extends State<TodayPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          _goToCreateTodoListPage(context);
+        },
         backgroundColor: Colors.orange,
         child: const Icon(
           Icons.add,
           color: Colors.white,
         ),
-      ),
-    );
-
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          planSection(context),
-          doneSection(context),
-        ],
       ),
     );
   }
@@ -106,7 +97,7 @@ class _TodayPageState extends State<TodayPage> {
           ListView.builder(
             shrinkWrap: true,
             itemCount: 2,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return toDoListCard(context, index, Colors.lightGreen[50]!);
             },
@@ -170,5 +161,11 @@ class _TodayPageState extends State<TodayPage> {
         ],
       ),
     );
+  }
+
+  void _goToCreateTodoListPage(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => CreateTodayPage(),
+    ));
   }
 }

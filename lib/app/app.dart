@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list_app_flutter/app/app_router.dart';
+import 'injector.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initDepedencies();
   runApp(const MyApp());
 }
 
