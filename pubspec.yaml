@@ -21,6 +21,21 @@ dependencies:
   #database local
   floor: ^1.4.2
 
+  #comparing dart objects
+  equatable: ^2.0.5
+
+  #beautiful style
+  flutter_neumorphic:
+    git:
+      url: https://github.com/den0206/Flutter-Neumorphic.git
+      ref: feature/remoce_accentcolor
+
+  #Date Format
+  intl: ^0.18.1
+
+  #service locator
+  get_it: ^7.6.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

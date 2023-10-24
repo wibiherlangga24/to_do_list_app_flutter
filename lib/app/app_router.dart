@@ -28,6 +28,7 @@ class _AppRouterState extends State<AppRouter> {
         title: Text(
           'My To do List',
           style: ThemeTextStyle.MuseoSans700w400.copyWith(
+            fontSize: 25,
             color: Colors.white,
           ),
         ),
