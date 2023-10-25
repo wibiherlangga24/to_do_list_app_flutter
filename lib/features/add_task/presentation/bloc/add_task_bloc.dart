@@ -17,7 +17,7 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
   Future<void> _onAddNewTask(AddTask event, Emitter<AddTaskState> emit) async {
     final TaskEntity task = TaskEntity(
       title: event.titleTask,
-      dateTime: '24-10-2023',
+      dateTime: event.dateTask,
       description: event.descriptionTask,
       status: 1,
     );

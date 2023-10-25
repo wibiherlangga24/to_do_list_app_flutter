@@ -176,7 +176,7 @@ class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(
-        Duration(days: 7),
+        Duration(days: 1),
       ),
     );
 

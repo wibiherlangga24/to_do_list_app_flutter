@@ -64,26 +64,15 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
   }
 
   Widget? _floatingActionButtonWidget(BuildContext context) {
-    return BlocBuilder<TodayBloc, TodayState>(
-      bloc: _bloc,
-      builder: (context, state) {
-        if (state.planTasks == null && state.doneTasks == null) {
-          return SizedBox.shrink();
-        } else if (state.planTasks!.isEmpty && state.doneTasks!.isEmpty) {
-          return SizedBox.shrink();
-        } else {
-          return FloatingActionButton(
-            onPressed: () {
-              _goToCreateTodoListPage(context);
-            },
-            backgroundColor: Colors.orange,
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          );
-        }
+    return FloatingActionButton(
+      onPressed: () {
+        _goToCreateTodoListPage(context);
       },
+      backgroundColor: Colors.orange,
+      child: const Icon(
+        Icons.add,
+        color: Colors.white,
+      ),
     );
   }
 
@@ -167,6 +156,8 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
   }
 
   Widget _emptyPage(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+
     return BlocBuilder<TodayBloc, TodayState>(
       bloc: _bloc,
       builder: (context, state) {
@@ -175,11 +166,16 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
             child: FutureBuilder(
               future: Future.delayed(Duration(seconds: 3)),
               builder: (c, s) => s.connectionState == ConnectionState.done
-                  ? Text(
-                      'Add to do list first',
-                      style: ThemeTextStyle.MuseoSans500w400.copyWith(
-                        fontSize: 18,
-                        color: Colors.black,
+                  ? Container(
+                      height: height,
+                      child: Center(
+                        child: Text(
+                          'Add to do list for today',
+                          style: ThemeTextStyle.MuseoSans500w400.copyWith(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     )
                   : SizedBox.shrink(),
@@ -190,11 +186,16 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
             child: FutureBuilder(
               future: Future.delayed(Duration(seconds: 3)),
               builder: (c, s) => s.connectionState == ConnectionState.done
-                  ? Text(
-                      'Add to do list first',
-                      style: ThemeTextStyle.MuseoSans500w400.copyWith(
-                        fontSize: 18,
-                        color: Colors.black,
+                  ? Container(
+                      height: height,
+                      child: Center(
+                        child: Text(
+                          'Add to do list for today',
+                          style: ThemeTextStyle.MuseoSans500w400.copyWith(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     )
                   : SizedBox.shrink(),
