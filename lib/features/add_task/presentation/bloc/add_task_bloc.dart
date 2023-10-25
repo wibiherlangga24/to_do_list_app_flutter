@@ -16,14 +16,18 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
 
   Future<void> _onAddNewTask(AddTask event, Emitter<AddTaskState> emit) async {
     final TaskEntity task = TaskEntity(
-      id: 4,
       title: event.titleTask,
-      dateTime: '24-10-2023',
+      dateTime: event.dateTask,
       description: event.descriptionTask,
+      status: 0,
     );
 
     await _saveTaskUseCase.call(task);
 
-    emit(SnackBarStateSuccess('Sucess submit new task'));
+    emit(
+      const SnackBarStateSuccess(
+        'Success submit new task',
+      ),
+    );
   }
 }

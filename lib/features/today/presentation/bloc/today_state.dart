@@ -1,9 +1,9 @@
 import '../../../add_task/domain/entity/task_entity.dart';
 
 abstract class TodayState {
-  final List<TaskEntity>? tasks;
-
-  const TodayState({this.tasks});
+  final List<TaskEntity>? planTasks;
+  final List<TaskEntity>? doneTasks;
+  const TodayState({this.planTasks, this.doneTasks});
 }
 
 class TodayLoading extends TodayState {
@@ -11,7 +11,10 @@ class TodayLoading extends TodayState {
 }
 
 class TodayDone extends TodayState {
-  const TodayDone(List<TaskEntity> tasks) : super(tasks: tasks);
+  const TodayDone(
+    List<TaskEntity> planTasks,
+    List<TaskEntity> doneTasks,
+  ) : super(planTasks: planTasks, doneTasks: doneTasks);
 }
 
 class SnackBarStateNone extends TodayState {

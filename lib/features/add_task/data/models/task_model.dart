@@ -8,11 +8,13 @@ class TaskModel extends TaskEntity {
     String? title,
     String? dateTime,
     String? description,
+    int? status,
   }) : super(
           id: id,
           title: title,
           dateTime: dateTime,
           description: description,
+          status: status,
         );
 
   factory TaskModel.fromEntity(TaskEntity entity) {
@@ -21,6 +23,7 @@ class TaskModel extends TaskEntity {
       title: entity.title,
       dateTime: entity.dateTime,
       description: entity.description,
+      status: entity.status,
     );
   }
 }

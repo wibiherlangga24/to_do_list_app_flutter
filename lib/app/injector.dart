@@ -4,6 +4,13 @@ import 'package:todo_list_app_flutter/features/add_task/data/repository/task_rep
 import 'package:todo_list_app_flutter/features/add_task/domain/repository/task_repository.dart';
 import 'package:todo_list_app_flutter/features/add_task/domain/use_cases/save_task_use_case.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/bloc/add_task_bloc.dart';
+import 'package:todo_list_app_flutter/features/today/domain/repository/today_repository.dart';
+import 'package:todo_list_app_flutter/features/today/domain/use_cases/delete_task_use_case.dart';
+import 'package:todo_list_app_flutter/features/today/domain/use_cases/get_task_use_case.dart';
+import 'package:todo_list_app_flutter/features/today/presentation/bloc/today_bloc.dart';
+
+import '../features/today/data/repository/today_repository_impl.dart';
+import '../features/today/domain/use_cases/update_task_use_case.dart';
 
 final sl = GetIt.instance;
 
@@ -17,9 +24,17 @@ Future<void> initDepedencies() async {
     TaskRepositoryImpl(sl()),
   );
 
+  sl.registerSingleton<TodayRepository>(
+    TodayRepositoryImpl(sl()),
+  );
+
   // Use Cases
   sl.registerSingleton<SaveTaskUseCase>(SaveTaskUseCase(sl()));
+  sl.registerSingleton<GetTaskUseCase>(GetTaskUseCase(sl()));
+  sl.registerSingleton<DeleteTaskUseCase>(DeleteTaskUseCase(sl()));
+  sl.registerSingleton<UpdateTaskUseCase>(UpdateTaskUseCase(sl()));
 
   // Blocs
   sl.registerFactory<AddTaskBloc>(() => AddTaskBloc(sl()));
+  sl.registerFactory<TodayBloc>(() => TodayBloc(sl(), sl(), sl()));
 }
