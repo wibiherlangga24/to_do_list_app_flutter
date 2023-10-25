@@ -11,6 +11,11 @@ import 'package:todo_list_app_flutter/features/today/presentation/bloc/today_blo
 
 import '../features/today/data/repository/today_repository_impl.dart';
 import '../features/today/domain/use_cases/update_task_use_case.dart';
+import '../features/yesterday/data/repository/yesterday_repository_impl.dart';
+import '../features/yesterday/domain/repository/yesterday_repository.dart';
+import '../features/yesterday/domain/use_cases/yesterday_get_task_use_case.dart';
+import '../features/yesterday/domain/use_cases/yesterday_update_task_use_case.dart';
+import '../features/yesterday/presentation/bloc/yesterday_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -23,9 +28,11 @@ Future<void> initDepedencies() async {
   sl.registerSingleton<TaskRepository>(
     TaskRepositoryImpl(sl()),
   );
-
   sl.registerSingleton<TodayRepository>(
     TodayRepositoryImpl(sl()),
+  );
+  sl.registerSingleton<YesterdayRepository>(
+    YesterdayRepositoryImpl(sl()),
   );
 
   // Use Cases
@@ -33,8 +40,12 @@ Future<void> initDepedencies() async {
   sl.registerSingleton<GetTaskUseCase>(GetTaskUseCase(sl()));
   sl.registerSingleton<DeleteTaskUseCase>(DeleteTaskUseCase(sl()));
   sl.registerSingleton<UpdateTaskUseCase>(UpdateTaskUseCase(sl()));
+  sl.registerSingleton<YesterdayGetTaskUseCase>(YesterdayGetTaskUseCase(sl()));
+  sl.registerSingleton<YesterdayUpdateTaskUseCase>(
+      YesterdayUpdateTaskUseCase(sl()));
 
   // Blocs
   sl.registerFactory<AddTaskBloc>(() => AddTaskBloc(sl()));
   sl.registerFactory<TodayBloc>(() => TodayBloc(sl(), sl(), sl()));
+  sl.registerFactory<YesterdayBloc>(() => YesterdayBloc(sl(), sl()));
 }

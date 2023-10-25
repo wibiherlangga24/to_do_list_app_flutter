@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -55,7 +57,22 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
               ],
             ),
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: _floatingActionButtonWidget(context),
+        ),
+      ),
+    );
+  }
+
+  Widget? _floatingActionButtonWidget(BuildContext context) {
+    return BlocBuilder<TodayBloc, TodayState>(
+      bloc: _bloc,
+      builder: (context, state) {
+        if (state.planTasks == null && state.doneTasks == null) {
+          return SizedBox.shrink();
+        } else if (state.planTasks!.isEmpty && state.doneTasks!.isEmpty) {
+          return SizedBox.shrink();
+        } else {
+          return FloatingActionButton(
             onPressed: () {
               _goToCreateTodoListPage(context);
             },
@@ -64,9 +81,9 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
               Icons.add,
               color: Colors.white,
             ),
-          ),
-        ),
-      ),
+          );
+        }
+      },
     );
   }
 
@@ -76,7 +93,7 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
       selector: (state) => state.planTasks,
       builder: (context, state) {
         if (state == null || state.isEmpty) {
-          return SizedBox.shrink();
+          return _emptyPage(context);
         }
 
         return SafeArea(
@@ -116,9 +133,8 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
       selector: (state) => state.doneTasks,
       builder: (context, state) {
         if (state == null || state.isEmpty) {
-          return const SizedBox.shrink();
+          return _emptyPage(context);
         }
-
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -146,6 +162,47 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
             ],
           ),
         );
+      },
+    );
+  }
+
+  Widget _emptyPage(BuildContext context) {
+    return BlocBuilder<TodayBloc, TodayState>(
+      bloc: _bloc,
+      builder: (context, state) {
+        if (state.planTasks == null && state.doneTasks == null) {
+          return Center(
+            child: FutureBuilder(
+              future: Future.delayed(Duration(seconds: 3)),
+              builder: (c, s) => s.connectionState == ConnectionState.done
+                  ? Text(
+                      'Add to do list first',
+                      style: ThemeTextStyle.MuseoSans500w400.copyWith(
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                    )
+                  : SizedBox.shrink(),
+            ),
+          );
+        } else if (state.planTasks!.isEmpty && state.doneTasks!.isEmpty) {
+          return Center(
+            child: FutureBuilder(
+              future: Future.delayed(Duration(seconds: 3)),
+              builder: (c, s) => s.connectionState == ConnectionState.done
+                  ? Text(
+                      'Add to do list first',
+                      style: ThemeTextStyle.MuseoSans500w400.copyWith(
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                    )
+                  : SizedBox.shrink(),
+            ),
+          );
+        } else {
+          return SizedBox.shrink();
+        }
       },
     );
   }
