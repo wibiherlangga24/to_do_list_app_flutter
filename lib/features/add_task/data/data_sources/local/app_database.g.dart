@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `task` (`id` INTEGER, `title` TEXT, `dateTime` TEXT, `description` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `task` (`id` INTEGER, `title` TEXT, `dateTime` TEXT, `description` TEXT, `status` INTEGER, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -111,7 +111,19 @@ class _$TaskDao extends TaskDao {
                   'id': item.id,
                   'title': item.title,
                   'dateTime': item.dateTime,
-                  'description': item.description
+                  'description': item.description,
+                  'status': item.status
+                }),
+        _taskModelUpdateAdapter = UpdateAdapter(
+            database,
+            'task',
+            ['id'],
+            (TaskModel item) => <String, Object?>{
+                  'id': item.id,
+                  'title': item.title,
+                  'dateTime': item.dateTime,
+                  'description': item.description,
+                  'status': item.status
                 }),
         _taskModelDeletionAdapter = DeletionAdapter(
             database,
@@ -121,7 +133,8 @@ class _$TaskDao extends TaskDao {
                   'id': item.id,
                   'title': item.title,
                   'dateTime': item.dateTime,
-                  'description': item.description
+                  'description': item.description,
+                  'status': item.status
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -132,21 +145,30 @@ class _$TaskDao extends TaskDao {
 
   final InsertionAdapter<TaskModel> _taskModelInsertionAdapter;
 
+  final UpdateAdapter<TaskModel> _taskModelUpdateAdapter;
+
   final DeletionAdapter<TaskModel> _taskModelDeletionAdapter;
 
   @override
-  Future<List<TaskModel>> getTasks() async {
-    return _queryAdapter.queryList('SELECT * FROM task',
+  Future<List<TaskModel>> getTasks(String date) async {
+    return _queryAdapter.queryList('SELECT * FROM task WHERE dateTime = ?1',
         mapper: (Map<String, Object?> row) => TaskModel(
             id: row['id'] as int?,
             title: row['title'] as String?,
             dateTime: row['dateTime'] as String?,
-            description: row['description'] as String?));
+            description: row['description'] as String?,
+            status: row['status'] as int?),
+        arguments: [date]);
   }
 
   @override
   Future<void> insertTask(TaskModel task) async {
     await _taskModelInsertionAdapter.insert(task, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateTask(TaskModel task) async {
+    await _taskModelUpdateAdapter.update(task, OnConflictStrategy.abort);
   }
 
   @override

@@ -17,7 +17,9 @@ class CreateTodayPage extends StatefulWidget {
 }
 
 class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
+  TextEditingController titleCtl = TextEditingController();
   TextEditingController dateCtl = TextEditingController();
+  TextEditingController descCtl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _bloc = GetIt.I.get<AddTaskBloc>();
 
@@ -54,7 +56,7 @@ class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
           if (state is SnackBarStateError) {
             showErrorSnackBar(context, message: state.message);
           } else if (state is SnackBarStateSuccess) {
-            showSuccessSnackBar(context, message: state.message);
+            showSuccessSnackBarAndBackAction(context, message: state.message);
           } else {
             removeSnackBar(context);
           }
@@ -85,6 +87,7 @@ class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextFormField(
+                        controller: titleCtl,
                         decoration: const InputDecoration(
                           labelText: 'Enter Task Name',
                         ),
@@ -121,6 +124,7 @@ class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
                         height: 30,
                       ),
                       TextFormField(
+                        controller: descCtl,
                         decoration: const InputDecoration(
                           labelText: 'Enter Description',
                         ),
@@ -183,7 +187,7 @@ class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
 
   void _createNewTask(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      _bloc.add(AddTask('Test', DateTime.now(), 'Test Desc'));
+      _bloc.add(AddTask(titleCtl.text, dateCtl.text, descCtl.text));
     }
   }
 }

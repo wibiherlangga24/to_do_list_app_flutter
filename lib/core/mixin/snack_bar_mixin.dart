@@ -46,6 +46,21 @@ mixin SnackBarMixin {
     );
   }
 
+  void showSuccessSnackBarAndBackAction(BuildContext context,
+      {String? message}) {
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+          SnackBar(
+            content: Text(message ?? ''),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 1),
+          ),
+        )
+        .closed
+        .then((_) => Navigator.pop(context));
+  }
+
   void removeSnackBar(BuildContext context) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
   }

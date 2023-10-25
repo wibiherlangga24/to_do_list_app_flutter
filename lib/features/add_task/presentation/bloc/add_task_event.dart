@@ -4,8 +4,9 @@ abstract class AddTaskEvent {
 
 class AddTask extends AddTaskEvent {
   final String titleTask;
-  final DateTime dateTask;
+  final String dateTask;
   final String descriptionTask;
+
   const AddTask(this.titleTask, this.dateTask, this.descriptionTask);
 }
 

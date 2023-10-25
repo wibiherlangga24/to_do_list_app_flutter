@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:todo_list_app_flutter/config/theme/theme_text_style.dart';
+import 'package:todo_list_app_flutter/core/mixin/snack_bar_mixin.dart';
+import 'package:todo_list_app_flutter/features/add_task/domain/entity/task_entity.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/pages/create_today_page.dart';
+import 'package:todo_list_app_flutter/features/today/presentation/bloc/today_bloc.dart';
+import 'package:todo_list_app_flutter/features/today/presentation/bloc/today_event.dart';
+import 'package:todo_list_app_flutter/features/today/presentation/bloc/today_state.dart';
 
 class TodayPage extends StatefulWidget {
   const TodayPage({Key? key}) : super(key: key);
@@ -9,105 +16,142 @@ class TodayPage extends StatefulWidget {
   State<TodayPage> createState() => _TodayPageState();
 }
 
-class _TodayPageState extends State<TodayPage> {
+class _TodayPageState extends State<TodayPage> with SnackBarMixin {
+  final _bloc = GetIt.I.get<TodayBloc>();
+
+  final List<String> optionsMenu = ['Remove', 'Done', 'Move for tomorrow'];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _bloc.add(GetSavedTasks());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            planSection(context),
-            doneSection(context),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _goToCreateTodoListPage(context);
+    return BlocProvider<TodayBloc>.value(
+      value: _bloc,
+      child: BlocListener<TodayBloc, TodayState>(
+        bloc: _bloc,
+        listener: (context, state) {
+          if (state is SnackBarStateError) {
+            showErrorSnackBar(context, message: state.message);
+          } else if (state is SnackBarStateSuccess) {
+            showSuccessSnackBar(context, message: state.message);
+          } else {
+            removeSnackBar(context);
+          }
         },
-        backgroundColor: Colors.orange,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
+        child: Scaffold(
+          body: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                planSection(context),
+                doneSection(context),
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              _goToCreateTodoListPage(context);
+            },
+            backgroundColor: Colors.orange,
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
     );
   }
 
   Widget planSection(BuildContext context) {
-    final bool isPlanSectionExist = true;
+    return BlocSelector<TodayBloc, TodayState, List<TaskEntity>?>(
+      bloc: _bloc,
+      selector: (state) => state.planTasks,
+      builder: (context, state) {
+        if (state == null || state.isEmpty) {
+          return SizedBox.shrink();
+        }
 
-    if (!isPlanSectionExist) {
-      return SizedBox.shrink();
-    }
-
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "PLAN:",
-            style: ThemeTextStyle.MuseoSans700w400.copyWith(
-              color: Colors.black,
-              fontSize: 30,
-            ),
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "PLAN:",
+                style: ThemeTextStyle.MuseoSans700w400.copyWith(
+                  color: Colors.black,
+                  fontSize: 30,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return toDoListCard(context, index, Colors.lightBlue[50]!,
+                      state[index], true);
+                },
+              ),
+            ],
           ),
-          SizedBox(
-            height: 10,
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: 1,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return toDoListCard(context, index, Colors.lightBlue[50]!);
-            },
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget doneSection(BuildContext context) {
-    final bool isDoneSectionExist = true;
+    return BlocSelector<TodayBloc, TodayState, List<TaskEntity>?>(
+      bloc: _bloc,
+      selector: (state) => state.doneTasks,
+      builder: (context, state) {
+        if (state == null || state.isEmpty) {
+          return const SizedBox.shrink();
+        }
 
-    if (!isDoneSectionExist) {
-      return SizedBox.shrink();
-    }
-
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "DONE:",
-            style: ThemeTextStyle.MuseoSans700w400.copyWith(
-              color: Colors.black,
-              fontSize: 30,
-            ),
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "DONE:",
+                style: ThemeTextStyle.MuseoSans700w400.copyWith(
+                  color: Colors.black,
+                  fontSize: 30,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return toDoListCard(context, index, Colors.lightGreen[50]!,
+                      state[index], false);
+                },
+              ),
+            ],
           ),
-          SizedBox(
-            height: 10,
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: 2,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return toDoListCard(context, index, Colors.lightGreen[50]!);
-            },
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget toDoListCard(BuildContext context, int index, Color color) {
+  Widget toDoListCard(BuildContext context, int index, Color color,
+      TaskEntity task, bool showOptions) {
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -117,14 +161,12 @@ class _TodayPageState extends State<TodayPage> {
         ),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: toDoListItem(context, index, color),
+      child: toDoListItem(context, index, color, task, showOptions),
     );
   }
 
-  Widget toDoListItem(BuildContext context, int index, Color color) {
-    final loremIpsum =
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-
+  Widget toDoListItem(BuildContext context, int index, Color color,
+      TaskEntity task, bool showOptions) {
     return Container(
       color: color,
       padding: EdgeInsets.all(10),
@@ -136,23 +178,21 @@ class _TodayPageState extends State<TodayPage> {
             children: [
               Expanded(
                 child: Text(
-                  'Meeting with client',
+                  task.title ?? '',
                   style: ThemeTextStyle.MuseoSans700w400.copyWith(
                     fontSize: 18,
                     color: Colors.black,
                   ),
                 ),
               ),
-              Icon(
-                Icons.settings,
-              ),
+              _optionWidget(context, task, showOptions),
             ],
           ),
           SizedBox(
             height: 20,
           ),
           Text(
-            loremIpsum,
+            task.description ?? '',
             style: ThemeTextStyle.MuseoSans500w400.copyWith(
               fontSize: 14,
               color: Colors.grey,
@@ -163,9 +203,58 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
+  Widget _optionWidget(BuildContext context, TaskEntity task, bool show) {
+    if (!show) {
+      return const SizedBox.shrink();
+    }
+
+    return MenuAnchor(
+      builder:
+          (BuildContext context, MenuController controller, Widget? child) {
+        return IconButton(
+          onPressed: () {
+            if (controller.isOpen) {
+              controller.close();
+            } else {
+              controller.open();
+            }
+          },
+          icon: const Icon(Icons.more_horiz),
+        );
+      },
+      menuChildren: List<MenuItemButton>.generate(
+        optionsMenu.length,
+        (int index) => MenuItemButton(
+          onPressed: () {
+            _showOptionPressed(context, index, task);
+          },
+          child: Text(optionsMenu[index]),
+        ),
+      ),
+    );
+  }
+
+  void _showOptionPressed(BuildContext context, int index, TaskEntity task) {
+    switch (index) {
+      case 0:
+        // Delete task
+        _bloc.add(DeleteTask(task));
+      case 1:
+        // Update Task Status into Done
+        _bloc.add(UpdateStatusTask(task));
+      case 2:
+        // Update Task Date into tomorrow
+        _bloc.add(UpdateDateTask(task));
+    }
+  }
+
   void _goToCreateTodoListPage(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
+    Navigator.of(context)
+        .push(MaterialPageRoute(
       builder: (context) => CreateTodayPage(),
-    ));
+    ))
+        .then((_) {
+      _bloc.add(GetSavedTasks());
+    });
   }
 }
