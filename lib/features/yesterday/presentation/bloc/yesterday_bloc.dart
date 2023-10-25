@@ -23,9 +23,6 @@ class YesterdayBloc extends Bloc<YesterdayEvent, YesterdayState> {
     final getPlanTasks = await _getPlanTasks(tasks);
     final getDoneTasks = await _getDoneTasks(tasks);
 
-    print('get plan yesterday tasks: ${getPlanTasks}');
-    print('get done yesterday tasks: ${getDoneTasks}');
-
     emit(
       YesterdayDone(getPlanTasks, getDoneTasks),
     );
