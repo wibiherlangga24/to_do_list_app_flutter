@@ -2,16 +2,19 @@ import 'package:bloc/bloc.dart';
 import 'package:todo_list_app_flutter/features/add_task/domain/entity/task_entity.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/bloc/add_task_event.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/bloc/add_task_state.dart';
-
+import '../../../add_task/domain/use_cases/update_task_selected_use_case.dart';
 import '../../domain/use_cases/save_task_use_case.dart';
 
 class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
   final SaveTaskUseCase _saveTaskUseCase;
+  final UpdateTaskSelectedUseCase _updateTaskUseCase;
 
   AddTaskBloc(
     this._saveTaskUseCase,
+    this._updateTaskUseCase,
   ) : super(SnackBarStateNone()) {
     on<AddTask>(_onAddNewTask);
+    on<UpdateTask>(_onUpdateTask);
   }
 
   Future<void> _onAddNewTask(AddTask event, Emitter<AddTaskState> emit) async {
@@ -19,7 +22,7 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
       title: event.titleTask,
       dateTime: event.dateTask,
       description: event.descriptionTask,
-      status: 1,
+      status: 0,
     );
 
     await _saveTaskUseCase.call(task);
@@ -27,6 +30,25 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
     emit(
       const SnackBarStateSuccess(
         'Success submit new task',
+      ),
+    );
+  }
+
+  Future<void> _onUpdateTask(
+      UpdateTask event, Emitter<AddTaskState> emit) async {
+    final TaskEntity task = event.task!.copyWith(
+      id: event.task.id,
+      title: event.titleTask,
+      dateTime: event.dateTask,
+      description: event.descriptionTask,
+      status: event.task.status,
+    );
+
+    await _updateTaskUseCase.call(task);
+
+    emit(
+      const SnackBarStateSuccess(
+        'Success submit update task',
       ),
     );
   }

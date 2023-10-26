@@ -1,5 +1,18 @@
+import '../../domain/entity/task_entity.dart';
+
 abstract class AddTaskState {
-  const AddTaskState();
+  final List<TaskEntity>? tasks;
+  const AddTaskState({this.tasks});
+}
+
+class TaskLoading extends AddTaskState {
+  const TaskLoading();
+}
+
+class TaskDone extends AddTaskState {
+  const TaskDone(
+    List<TaskEntity> tasks,
+  ) : super(tasks: tasks);
 }
 
 class SnackBarStateNone extends AddTaskState {

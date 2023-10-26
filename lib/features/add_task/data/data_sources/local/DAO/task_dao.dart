@@ -12,6 +12,9 @@ abstract class TaskDao {
   @Query('SELECT * FROM task WHERE dateTime = :date')
   Future<List<TaskModel>> getTasks(String date);
 
+  @Query('SELECT * FROM task WHERE id = :id')
+  Future<List<TaskModel>> getTasksById(int id);
+
   @update
   Future<void> updateTask(TaskModel task);
 }

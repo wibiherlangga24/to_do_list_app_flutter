@@ -5,28 +5,38 @@ import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_list_app_flutter/config/theme/theme_text_style.dart';
 import 'package:todo_list_app_flutter/core/mixin/snack_bar_mixin.dart';
+import 'package:todo_list_app_flutter/features/add_task/domain/entity/task_entity.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/bloc/add_task_bloc.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/bloc/add_task_event.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/bloc/add_task_state.dart';
 
-class CreateTodayPage extends StatefulWidget {
-  const CreateTodayPage({Key? key}) : super(key: key);
+class UpdateTodayPage extends StatefulWidget {
+  final TaskEntity task;
+
+  const UpdateTodayPage({Key? key, required this.task}) : super(key: key);
 
   @override
-  State<CreateTodayPage> createState() => _CreateTodayPageState();
+  State<UpdateTodayPage> createState() => _UpdateTodayPageState(task);
 }
 
-class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
+class _UpdateTodayPageState extends State<UpdateTodayPage> with SnackBarMixin {
   TextEditingController titleCtl = TextEditingController();
   TextEditingController dateCtl = TextEditingController();
   TextEditingController descCtl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _bloc = GetIt.I.get<AddTaskBloc>();
 
+  final TaskEntity task;
+
+  _UpdateTodayPageState(this.task);
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
+    titleCtl.text = task.title ?? '';
+    dateCtl.text = task.dateTime ?? '';
+    descCtl.text = task.description ?? '';
   }
 
   @override
@@ -71,7 +81,7 @@ class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Add New Task',
+                'Update Task',
                 style: ThemeTextStyle.MuseoSans700w400.copyWith(
                   fontSize: 30,
                   color: Colors.black,
@@ -141,7 +151,7 @@ class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
                           NeumorphicButton(
                             margin: EdgeInsets.only(top: 12),
                             onPressed: () {
-                              _createNewTask(context);
+                              _updateTask(context);
                             },
                             style: NeumorphicStyle(
                               color: Colors.green,
@@ -185,9 +195,9 @@ class _CreateTodayPageState extends State<CreateTodayPage> with SnackBarMixin {
     }
   }
 
-  void _createNewTask(BuildContext context) {
+  void _updateTask(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      _bloc.add(AddTask(titleCtl.text, dateCtl.text, descCtl.text));
+      _bloc.add(UpdateTask(titleCtl.text, dateCtl.text, descCtl.text, task));
     }
   }
 }

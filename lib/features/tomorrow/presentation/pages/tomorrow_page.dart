@@ -7,6 +7,7 @@ import 'package:todo_list_app_flutter/config/theme/theme_text_style.dart';
 import 'package:todo_list_app_flutter/core/mixin/snack_bar_mixin.dart';
 import 'package:todo_list_app_flutter/features/add_task/domain/entity/task_entity.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/pages/create_today_page.dart';
+import '../../../add_task/presentation/pages/update_today_page.dart';
 import '../bloc/tomorrow_bloc.dart';
 import '../bloc/tomorrow_event.dart';
 import '../bloc/tomorrow_state.dart';
@@ -150,16 +151,21 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
 
   Widget toDoListCard(BuildContext context, int index, Color color,
       TaskEntity task, bool showOptions) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(
-          color: Colors.white,
+    return InkWell(
+      onTap: () {
+        _goToUpdateTodoListPage(context, task);
+      },
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(
+            color: Colors.white,
+          ),
+          borderRadius: BorderRadius.circular(8),
         ),
-        borderRadius: BorderRadius.circular(8),
+        child: toDoListItem(context, index, color, task, showOptions),
       ),
-      child: toDoListItem(context, index, color, task, showOptions),
     );
   }
 
@@ -247,6 +253,18 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
     Navigator.of(context)
         .push(MaterialPageRoute(
       builder: (context) => CreateTodayPage(),
+    ))
+        .then((_) {
+      _bloc.add(GetSavedTasks());
+    });
+  }
+
+  void _goToUpdateTodoListPage(BuildContext context, TaskEntity task) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+      builder: (context) => UpdateTodayPage(
+        task: task,
+      ),
     ))
         .then((_) {
       _bloc.add(GetSavedTasks());

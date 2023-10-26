@@ -12,4 +12,14 @@ class TaskRepositoryImpl extends TaskRepository {
   Future<void> saveTask(TaskEntity task) {
     return _appDatabase.taskDAO.insertTask(TaskModel.fromEntity(task));
   }
+
+  @override
+  Future<void> updateTask(TaskEntity task) {
+    return _appDatabase.taskDAO.updateTask(TaskModel.fromEntity(task));
+  }
+
+  @override
+  Future<List<TaskModel>> getSavedTask(int id) async {
+    return _appDatabase.taskDAO.getTasksById(id);
+  }
 }
