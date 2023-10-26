@@ -7,6 +7,7 @@ import 'package:todo_list_app_flutter/config/theme/theme_text_style.dart';
 import 'package:todo_list_app_flutter/core/mixin/snack_bar_mixin.dart';
 import 'package:todo_list_app_flutter/features/add_task/domain/entity/task_entity.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/pages/create_today_page.dart';
+import 'package:todo_list_app_flutter/features/add_task/presentation/pages/update_today_page.dart';
 import 'package:todo_list_app_flutter/features/today/presentation/bloc/today_bloc.dart';
 import 'package:todo_list_app_flutter/features/today/presentation/bloc/today_event.dart';
 import 'package:todo_list_app_flutter/features/today/presentation/bloc/today_state.dart';
@@ -105,8 +106,13 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
                 itemCount: state.length,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return toDoListCard(context, index, Colors.lightBlue[50]!,
-                      state[index], true);
+                  return InkWell(
+                    onTap: () {
+                      _goToUpdateTodoListPage(context, state[index]);
+                    },
+                    child: toDoListCard(context, index, Colors.lightBlue[50]!,
+                        state[index], true),
+                  );
                 },
               ),
             ],
@@ -310,6 +316,16 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
     Navigator.of(context)
         .push(MaterialPageRoute(
       builder: (context) => CreateTodayPage(),
+    ))
+        .then((_) {
+      _bloc.add(GetSavedTasks());
+    });
+  }
+
+  void _goToUpdateTodoListPage(BuildContext context, TaskEntity task) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+      builder: (context) => UpdateTodayPage(task: task),
     ))
         .then((_) {
       _bloc.add(GetSavedTasks());

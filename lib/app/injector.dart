@@ -3,6 +3,7 @@ import 'package:todo_list_app_flutter/features/add_task/data/data_sources/local/
 import 'package:todo_list_app_flutter/features/add_task/data/repository/task_repository_impl.dart';
 import 'package:todo_list_app_flutter/features/add_task/domain/repository/task_repository.dart';
 import 'package:todo_list_app_flutter/features/add_task/domain/use_cases/save_task_use_case.dart';
+import 'package:todo_list_app_flutter/features/add_task/domain/use_cases/update_task_selected_use_case.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/bloc/add_task_bloc.dart';
 import 'package:todo_list_app_flutter/features/today/domain/repository/today_repository.dart';
 import 'package:todo_list_app_flutter/features/today/domain/use_cases/delete_task_use_case.dart';
@@ -52,15 +53,16 @@ Future<void> initDepedencies() async {
   sl.registerSingleton<YesterdayGetTaskUseCase>(YesterdayGetTaskUseCase(sl()));
   sl.registerSingleton<YesterdayUpdateTaskUseCase>(
       YesterdayUpdateTaskUseCase(sl()));
-
   sl.registerSingleton<TomorrowGetTaskUseCase>(TomorrowGetTaskUseCase(sl()));
   sl.registerSingleton<TomorrowUpdateTaskUseCase>(
       TomorrowUpdateTaskUseCase(sl()));
   sl.registerSingleton<TomorrowDeleteTaskUseCase>(
       TomorrowDeleteTaskUseCase(sl()));
+  sl.registerSingleton<UpdateTaskSelectedUseCase>(
+      UpdateTaskSelectedUseCase(sl()));
 
   // Blocs
-  sl.registerFactory<AddTaskBloc>(() => AddTaskBloc(sl()));
+  sl.registerFactory<AddTaskBloc>(() => AddTaskBloc(sl(), sl()));
   sl.registerFactory<TodayBloc>(() => TodayBloc(sl(), sl(), sl()));
   sl.registerFactory<YesterdayBloc>(() => YesterdayBloc(sl(), sl()));
   sl.registerFactory<TomorrowBloc>(() => TomorrowBloc(sl(), sl(), sl()));
