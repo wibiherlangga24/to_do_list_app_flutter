@@ -13,7 +13,7 @@ class YesterdayBloc extends Bloc<YesterdayEvent, YesterdayState> {
   YesterdayBloc(
     this._getTaskUseCase,
     this._updateTaskUseCase,
-  ) : super(YesterdayLoading()) {
+  ) : super(const YesterdayLoading()) {
     on<GetSavedTasks>(_onGetSavedTasks);
     on<UpdateDateTask>(_onUpdateDateTask);
   }
@@ -41,6 +41,7 @@ class YesterdayBloc extends Bloc<YesterdayEvent, YesterdayState> {
       dateTime: _getDateNow(),
       description: event.task?.description,
       status: 0,
+      userId: event.task?.userId,
     );
 
     await _updateTaskUseCase.call(task);

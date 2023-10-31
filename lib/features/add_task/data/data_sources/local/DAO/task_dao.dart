@@ -9,8 +9,8 @@ abstract class TaskDao {
   @delete
   Future<void> deleteTask(TaskModel task);
 
-  @Query('SELECT * FROM task WHERE dateTime = :date')
-  Future<List<TaskModel>> getTasks(String date);
+  @Query('SELECT * FROM task WHERE dateTime = :date AND userId = :email')
+  Future<List<TaskModel>> getTasks(String date, String email);
 
   @Query('SELECT * FROM task WHERE id = :id')
   Future<List<TaskModel>> getTasksById(int id);

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -28,7 +27,7 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
   void initState() {
     super.initState();
 
-    _bloc.add(GetSavedTasks());
+    _bloc.add(const GetSavedTasks());
   }
 
   @override
@@ -47,8 +46,54 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
           }
         },
         child: Scaffold(
-          body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+          body: _buildBody(context),
+          floatingActionButton: _floatingActionButtonWidget(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return BlocBuilder<TodayBloc, TodayState>(
+      bloc: _bloc,
+      builder: (context, state) {
+        if (state.planTasks == null && state.doneTasks == null) {
+          return Center(
+            child: FutureBuilder(
+              future: Future.delayed(const Duration(seconds: 1)),
+              builder: (c, s) => s.connectionState == ConnectionState.done
+                  ? Center(
+                      child: Text(
+                        'Add to do list for today',
+                        style: ThemeTextStyle.MuseoSans500w400.copyWith(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          );
+        } else if (state.planTasks!.isEmpty && state.doneTasks!.isEmpty) {
+          return Center(
+            child: FutureBuilder(
+              future: Future.delayed(const Duration(seconds: 1)),
+              builder: (c, s) => s.connectionState == ConnectionState.done
+                  ? Center(
+                      child: Text(
+                        'Add to do list for today',
+                        style: ThemeTextStyle.MuseoSans500w400.copyWith(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          );
+        } else {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,10 +102,9 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
                 doneSection(context),
               ],
             ),
-          ),
-          floatingActionButton: _floatingActionButtonWidget(context),
-        ),
-      ),
+          );
+        }
+      },
     );
   }
 
@@ -83,7 +127,7 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
       selector: (state) => state.planTasks,
       builder: (context, state) {
         if (state == null || state.isEmpty) {
-          return _emptyPage(context);
+          return const SizedBox.shrink();
         }
 
         return SafeArea(
@@ -98,7 +142,7 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
                   fontSize: 30,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               ListView.builder(
@@ -128,7 +172,7 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
       selector: (state) => state.doneTasks,
       builder: (context, state) {
         if (state == null || state.isEmpty) {
-          return _emptyPage(context);
+          return const SizedBox.shrink();
         }
         return SafeArea(
           child: Column(
@@ -142,7 +186,7 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
                   fontSize: 30,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               ListView.builder(
@@ -157,59 +201,6 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
             ],
           ),
         );
-      },
-    );
-  }
-
-  Widget _emptyPage(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-
-    return BlocBuilder<TodayBloc, TodayState>(
-      bloc: _bloc,
-      builder: (context, state) {
-        if (state.planTasks == null && state.doneTasks == null) {
-          return Center(
-            child: FutureBuilder(
-              future: Future.delayed(Duration(seconds: 3)),
-              builder: (c, s) => s.connectionState == ConnectionState.done
-                  ? Container(
-                      height: height,
-                      child: Center(
-                        child: Text(
-                          'Add to do list for today',
-                          style: ThemeTextStyle.MuseoSans500w400.copyWith(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    )
-                  : SizedBox.shrink(),
-            ),
-          );
-        } else if (state.planTasks!.isEmpty && state.doneTasks!.isEmpty) {
-          return Center(
-            child: FutureBuilder(
-              future: Future.delayed(Duration(seconds: 3)),
-              builder: (c, s) => s.connectionState == ConnectionState.done
-                  ? Container(
-                      height: height,
-                      child: Center(
-                        child: Text(
-                          'Add to do list for today',
-                          style: ThemeTextStyle.MuseoSans500w400.copyWith(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    )
-                  : SizedBox.shrink(),
-            ),
-          );
-        } else {
-          return SizedBox.shrink();
-        }
       },
     );
   }
@@ -233,7 +224,7 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
       TaskEntity task, bool showOptions) {
     return Container(
       color: color,
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -252,7 +243,7 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
               _optionWidget(context, task, showOptions),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Text(
@@ -315,10 +306,10 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
   void _goToCreateTodoListPage(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(
-      builder: (context) => CreateTodayPage(),
+      builder: (context) => const CreateTodayPage(),
     ))
         .then((_) {
-      _bloc.add(GetSavedTasks());
+      _bloc.add(const GetSavedTasks());
     });
   }
 
@@ -328,7 +319,7 @@ class _TodayPageState extends State<TodayPage> with SnackBarMixin {
       builder: (context) => UpdateTodayPage(task: task),
     ))
         .then((_) {
-      _bloc.add(GetSavedTasks());
+      _bloc.add(const GetSavedTasks());
     });
   }
 }

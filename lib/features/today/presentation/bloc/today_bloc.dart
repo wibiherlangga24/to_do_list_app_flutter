@@ -16,7 +16,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
     this._getTaskUseCase,
     this._deleteTaskUseCase,
     this._updateTaskUseCase,
-  ) : super(TodayLoading()) {
+  ) : super(const TodayLoading()) {
     on<GetSavedTasks>(_onGetSavedTasks);
     on<DeleteTask>(_onRemoveTask);
     on<UpdateStatusTask>(_onUpdateStatusTask);
@@ -51,6 +51,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       dateTime: event.task?.dateTime,
       description: event.task?.description,
       status: 1,
+      userId: event.task?.userId,
     );
 
     await _updateTaskUseCase.call(task);
@@ -66,6 +67,7 @@ class TodayBloc extends Bloc<TodayEvent, TodayState> {
       dateTime: _getDateTomorrow(),
       description: event.task?.description,
       status: 0,
+      userId: event.task?.userId,
     );
 
     await _updateTaskUseCase.call(task);
