@@ -24,7 +24,7 @@ dependencies:
   #comparing dart objects
   equatable: ^2.0.5
 
-  #beautiful style
+  #beautiful style, specifically i'm using for button
   flutter_neumorphic:
     git:
       url: https://github.com/den0206/Flutter-Neumorphic.git
@@ -36,15 +36,27 @@ dependencies:
   #service locator
   get_it: ^7.6.4
 
+  #Shared preferences
+  shared_preferences:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
   floor_generator: ^1.4.2
   build_runner:
+  flutter_launcher_icons: "^0.13.1"
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path_android: "assets/to_do_list_img.png"
+  image_path_ios: "assets/to_do_list_img.png"
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/
 
   fonts:
     - family: MuseoSans100

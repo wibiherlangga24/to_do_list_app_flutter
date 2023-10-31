@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list_app_flutter/features/add_task/data/data_sources/local/app_database.dart';
 import 'package:todo_list_app_flutter/features/add_task/data/models/task_model.dart';
 import 'package:todo_list_app_flutter/features/add_task/domain/entity/task_entity.dart';
@@ -11,7 +12,9 @@ class YesterdayRepositoryImpl extends YesterdayRepository {
 
   @override
   Future<List<TaskModel>> getSavedTasks(String date) async {
-    return _appDatabase.taskDAO.getTasks(date);
+    final sharedPref = await SharedPreferences.getInstance();
+    final emailUser = sharedPref.getString('email');
+    return _appDatabase.taskDAO.getTasks(date, emailUser ?? '');
   }
 
   @override

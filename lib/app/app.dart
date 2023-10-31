@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list_app_flutter/app/app_router.dart';
+import 'package:todo_list_app_flutter/app/splash_screen.dart';
 import 'injector.dart';
 
 Future<void> main() async {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const AppRouter(),
+      home: const SplashScreen(),
     );
   }
 }

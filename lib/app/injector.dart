@@ -5,11 +5,17 @@ import 'package:todo_list_app_flutter/features/add_task/domain/repository/task_r
 import 'package:todo_list_app_flutter/features/add_task/domain/use_cases/save_task_use_case.dart';
 import 'package:todo_list_app_flutter/features/add_task/domain/use_cases/update_task_selected_use_case.dart';
 import 'package:todo_list_app_flutter/features/add_task/presentation/bloc/add_task_bloc.dart';
+import 'package:todo_list_app_flutter/features/login/data/repository/user_repository_impl.dart';
+import 'package:todo_list_app_flutter/features/login/domain/repository/user_repository.dart';
+import 'package:todo_list_app_flutter/features/login/domain/use_cases/login_use_case.dart';
+import 'package:todo_list_app_flutter/features/login/domain/use_cases/register_use_case.dart';
+import 'package:todo_list_app_flutter/features/login/domain/use_cases/validate_user_use_case.dart';
 import 'package:todo_list_app_flutter/features/today/domain/repository/today_repository.dart';
 import 'package:todo_list_app_flutter/features/today/domain/use_cases/delete_task_use_case.dart';
 import 'package:todo_list_app_flutter/features/today/domain/use_cases/get_task_use_case.dart';
 import 'package:todo_list_app_flutter/features/today/presentation/bloc/today_bloc.dart';
 
+import '../features/login/presentation/bloc/user_bloc.dart';
 import '../features/today/data/repository/today_repository_impl.dart';
 import '../features/today/domain/use_cases/update_task_use_case.dart';
 import '../features/tomorrow/data/repository/tomorrow_repository_impl.dart';
@@ -45,6 +51,10 @@ Future<void> initDepedencies() async {
     TomorrowRepositoryImpl(sl()),
   );
 
+  sl.registerSingleton<UserRepository>(
+    UserRepositoryImpl(sl()),
+  );
+
   // Use Cases
   sl.registerSingleton<SaveTaskUseCase>(SaveTaskUseCase(sl()));
   sl.registerSingleton<GetTaskUseCase>(GetTaskUseCase(sl()));
@@ -61,9 +71,16 @@ Future<void> initDepedencies() async {
   sl.registerSingleton<UpdateTaskSelectedUseCase>(
       UpdateTaskSelectedUseCase(sl()));
 
+  sl.registerSingleton<LoginUseCase>(LoginUseCase(sl()));
+
+  sl.registerSingleton<RegisterUseCase>(RegisterUseCase(sl()));
+
+  sl.registerSingleton<ValidateUserUseCase>(ValidateUserUseCase(sl()));
+
   // Blocs
   sl.registerFactory<AddTaskBloc>(() => AddTaskBloc(sl(), sl()));
   sl.registerFactory<TodayBloc>(() => TodayBloc(sl(), sl(), sl()));
   sl.registerFactory<YesterdayBloc>(() => YesterdayBloc(sl(), sl()));
   sl.registerFactory<TomorrowBloc>(() => TomorrowBloc(sl(), sl(), sl()));
+  sl.registerFactory<UserBloc>(() => UserBloc(sl(), sl(), sl()));
 }

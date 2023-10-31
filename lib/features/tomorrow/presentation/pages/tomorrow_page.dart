@@ -28,7 +28,7 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
   void initState() {
     super.initState();
 
-    _bloc.add(GetSavedTasks());
+    _bloc.add(const GetSavedTasks());
   }
 
   @override
@@ -47,8 +47,37 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
           }
         },
         child: Scaffold(
-          body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+          body: _buildBody(context),
+          floatingActionButton: _floatingActionButtonWidget(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return BlocBuilder<TomorrowBloc, TomorrowState>(
+      bloc: _bloc,
+      builder: (context, state) {
+        if (state.tasks == null || state.tasks!.isEmpty) {
+          return Center(
+            child: FutureBuilder(
+              future: Future.delayed(const Duration(seconds: 1)),
+              builder: (c, s) => s.connectionState == ConnectionState.done
+                  ? Center(
+                      child: Text(
+                        'Add to do list for tomorrow',
+                        style: ThemeTextStyle.MuseoSans500w400.copyWith(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          );
+        } else {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,10 +85,9 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
                 planSection(context),
               ],
             ),
-          ),
-          floatingActionButton: _floatingActionButtonWidget(context),
-        ),
-      ),
+          );
+        }
+      },
     );
   }
 
@@ -82,7 +110,7 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
       selector: (state) => state.tasks,
       builder: (context, state) {
         if (state == null || state.isEmpty) {
-          return _emptyPage(context);
+          return const SizedBox.shrink();
         }
 
         return SafeArea(
@@ -116,39 +144,6 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
     );
   }
 
-  Widget _emptyPage(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-
-    return BlocBuilder<TomorrowBloc, TomorrowState>(
-      bloc: _bloc,
-      builder: (context, state) {
-        if (state.tasks == null || state.tasks!.isEmpty) {
-          return Center(
-            child: FutureBuilder(
-              future: Future.delayed(Duration(seconds: 1)),
-              builder: (c, s) => s.connectionState == ConnectionState.done
-                  ? Container(
-                      height: height,
-                      child: Center(
-                        child: Text(
-                          'Add to do list for tomorrow',
-                          style: ThemeTextStyle.MuseoSans500w400.copyWith(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    )
-                  : SizedBox.shrink(),
-            ),
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
-    );
-  }
-
   Widget toDoListCard(BuildContext context, int index, Color color,
       TaskEntity task, bool showOptions) {
     return InkWell(
@@ -173,7 +168,7 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
       TaskEntity task, bool showOptions) {
     return Container(
       color: color,
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -192,7 +187,7 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
               _optionWidget(context, task, showOptions),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Text(
@@ -252,10 +247,10 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
   void _goToCreateTodoListPage(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(
-      builder: (context) => CreateTodayPage(),
+      builder: (context) => const CreateTodayPage(),
     ))
         .then((_) {
-      _bloc.add(GetSavedTasks());
+      _bloc.add(const GetSavedTasks());
     });
   }
 
@@ -267,7 +262,7 @@ class _TomorrowPageState extends State<TomorrowPage> with SnackBarMixin {
       ),
     ))
         .then((_) {
-      _bloc.add(GetSavedTasks());
+      _bloc.add(const GetSavedTasks());
     });
   }
 }

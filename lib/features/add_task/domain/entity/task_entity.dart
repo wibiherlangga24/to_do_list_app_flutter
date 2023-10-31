@@ -6,9 +6,15 @@ class TaskEntity extends Equatable {
   final String? dateTime;
   final String? description;
   final int? status;
+  final String? userId;
 
   const TaskEntity(
-      {this.id, this.title, this.dateTime, this.description, this.status});
+      {this.id,
+      this.title,
+      this.dateTime,
+      this.description,
+      this.status,
+      this.userId});
 
   @override
   // TODO: implement props
@@ -18,6 +24,7 @@ class TaskEntity extends Equatable {
         dateTime,
         description,
         status,
+        userId,
       ];
 
   TaskEntity copyWith({
@@ -26,6 +33,7 @@ class TaskEntity extends Equatable {
     String? dateTime,
     String? description,
     int? status,
+    String? userId,
   }) {
     return TaskEntity(
       id: id,
@@ -33,6 +41,7 @@ class TaskEntity extends Equatable {
       dateTime: dateTime,
       description: description,
       status: status,
+      userId: userId,
     );
   }
 }

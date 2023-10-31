@@ -25,8 +25,6 @@ class TomorrowBloc extends Bloc<TomorrowEvent, TomorrowState> {
   Future<void> _showTasks(Emitter<TomorrowState> emit) async {
     final tasks = await _getTaskUseCase.call(_getDateTomorrow());
 
-    print('tasks tomorrow: ${tasks}');
-
     emit(
       TomorrowDone(tasks),
     );
@@ -51,6 +49,7 @@ class TomorrowBloc extends Bloc<TomorrowEvent, TomorrowState> {
       dateTime: _getDateNow(),
       description: event.task?.description,
       status: 0,
+      userId: event.task?.userId,
     );
 
     await _updateTaskUseCase.call(task);
